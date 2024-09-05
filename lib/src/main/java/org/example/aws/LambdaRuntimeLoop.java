@@ -6,11 +6,15 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
 
 public class LambdaRuntimeLoop {
+    private static final Logger LOGGER = LogManager.getLogger(LambdaRuntimeLoop.class);
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -33,15 +37,13 @@ public class LambdaRuntimeLoop {
             HttpResponse<String> event = lambdaRuntimeHttpClient.nextInvocation();
             String requestId = event.headers().firstValue(AWS_LAMBDA_REQUEST_ID).orElseThrow();
             String functionArn = event.headers().firstValue(AWS_LAMBDA_INVOKED_FUNCTION_ARN).orElseThrow();
-
-
             try {
                 APIGatewayProxyRequestEvent request = OBJECT_MAPPER.readValue(event.body(), APIGatewayProxyRequestEvent.class);
                 APIGatewayProxyResponseEvent output
                         = handler.handleRequest(request, new CustomContext(requestId, functionArn, 0));
                 lambdaRuntimeHttpClient.invocationResponse(requestId, writeValue(output));
             } catch (Exception e) {
-                System.err.println(e.getMessage());
+                LOGGER.error(e.getMessage());
                 try {
                     lambdaRuntimeHttpClient.invocationError(requestId);
                 } catch (IOException | InterruptedException ex) {

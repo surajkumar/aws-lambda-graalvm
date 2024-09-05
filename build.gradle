@@ -22,5 +22,8 @@ subprojects {
         implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
         implementation 'com.amazonaws:aws-lambda-java-events:3.13.0'
         implementation 'com.amazonaws:aws-lambda-java-runtime-interface-client:2.6.0'
+
+        implementation 'org.slf4j:log4j-over-slf4j:2.0.16'
+        implementation 'ch.qos.logback:logback-classic:1.5.7'
     }
 }
