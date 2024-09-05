@@ -1,0 +1,4 @@
+rootProject.name = "aws-lambda-graalvm"
+include 'lambdas:hello-world'
+include 'lib'
+

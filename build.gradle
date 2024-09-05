@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'application'
+
+    repositories {
+        mavenCentral()
+    }
+
+    application {
+        mainClassName = "org.example.aws.Main"
+    }
+
+    dependencies {
+        implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
+        implementation 'com.amazonaws:aws-lambda-java-events:3.13.0'
+        implementation 'com.amazonaws:aws-lambda-java-runtime-interface-client:2.6.0'
+    }
+}
