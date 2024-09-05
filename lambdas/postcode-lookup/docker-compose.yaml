@@ -1,0 +1,7 @@
+services:
+  run-build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./native-artifacts:/native-artifacts

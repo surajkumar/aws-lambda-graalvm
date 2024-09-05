@@ -49,3 +49,26 @@ Resources:
     Properties:
       LogGroupName: !Sub /aws/lambda/${HelloWorldJavaFunction}
       RetentionInDays: 7
+
+  PostcodeLookupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambdas/postcode-lookup
+      Handler: uk.gov.di.ipv.cri.address.api.handler.PostcodeLookupHandler
+      MemorySize: 512
+      Runtime: provided.al2023
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - '*'
+      Policies:
+        - AWSLambdaBasicExecutionRole
+    Metadata:
+      BuildMethod: makefile
+
+  PostcodeLookupFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${PostcodeLookupFunction}
+      RetentionInDays: 7

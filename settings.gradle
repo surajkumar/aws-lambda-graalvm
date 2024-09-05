@@ -1,4 +1,6 @@
 rootProject.name = "aws-lambda-graalvm"
 include 'lambdas:hello-world'
 include 'lib'
+include 'lambdas:postcode-lookup'
+findProject(':lambdas:postcode-lookup')?.name = 'postcode-lookup'
 
