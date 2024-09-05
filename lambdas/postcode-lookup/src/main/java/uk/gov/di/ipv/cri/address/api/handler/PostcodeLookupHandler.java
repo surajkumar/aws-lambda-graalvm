@@ -60,6 +60,11 @@ public class PostcodeLookupHandler
 
     public static final long CONNECTION_TIMEOUT_SECONDS = 15;
 
+    static {
+        System.setProperty("software.amazon.awssdk.http.service.impl",
+                "software.amazon.awssdk.http.urlconnection.UrlConnectionSdkHttpService");
+    }
+
     @ExcludeFromGeneratedCoverageReport
     public PostcodeLookupHandler() {
         ClientProviderFactory clientProviderFactory = new ClientProviderFactory();
