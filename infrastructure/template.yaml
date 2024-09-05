@@ -4,52 +4,6 @@ Transform: [ AWS::LanguageExtensions, AWS::Serverless-2016-10-31 ]
 
 Resources:
 
-  # Native Lambda
-  HelloWorldNativeFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ../lambdas/hello-world
-      Handler: org.example.HelloWorldFunction
-      MemorySize: 512
-      Runtime: provided.al2023
-      FunctionUrlConfig:
-        AuthType: NONE
-        Cors:
-          AllowOrigins:
-            - '*'
-      Policies:
-        - AWSLambdaBasicExecutionRole
-    Metadata:
-      BuildMethod: makefile
-
-  HelloWorldNativeFunctionLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${HelloWorldNativeFunction}
-      RetentionInDays: 7
-
-  # Regular Java Lambda, we are re-using the hello-world module
-  HelloWorldJavaFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ../lambdas/hello-world
-      Handler: org.example.HelloWorldFunction::handleRequest
-      MemorySize: 512
-      Runtime: java11
-      FunctionUrlConfig:
-        AuthType: NONE
-        Cors:
-          AllowOrigins:
-            - '*'
-      Policies:
-        - AWSLambdaBasicExecutionRole
-
-  HelloWorldJavaFunctionLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${HelloWorldJavaFunction}
-      RetentionInDays: 7
-
   PostcodeLookupFunction:
     Type: AWS::Serverless::Function
     Properties:

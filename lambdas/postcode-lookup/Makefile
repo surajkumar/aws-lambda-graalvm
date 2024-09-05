@@ -1,10 +1,10 @@
-.PHONY: build-HelloWorldNativeFunction clean
+.PHONY: build-PostcodeLookupFunction clean
 
 IMAGE_NAME=native
 OUTPUT_ZIP=$(ARTIFACTS_DIR)/bootstrap
 NATIVE_ARTIFACTS_DIR=native-artifacts
 
-build-HelloWorldNativeFunction: $(OUTPUT_ZIP)
+build-PostcodeLookupFunction: $(OUTPUT_ZIP)
 
 $(BUILD_DIR)/$(IMAGE_NAME): $(BUILD_DIR) $(wildcard src/**/*.java)
 	gradle build
