@@ -3,37 +3,31 @@ package org.example.aws;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Constructor;
 
 public class Main {
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+
     public static void main(String[] args) throws Exception {
         LambdaRuntimeHttpClient lambdaRuntimeHttpClient = new LambdaRuntimeHttpClient();
 
         String handlerName = System.getenv("_HANDLER");
-        System.out.println("Invoking handler " + handlerName);
+        LOGGER.info("Invoking handler " + handlerName);
 
         RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> handler = getHandlerInstance(handlerName);
-        if (handler == null) {
-            System.out.println("Handler is null");
-            return;
-        }
-
         LambdaRuntimeLoop lambdaRuntimeLoop = new LambdaRuntimeLoop(lambdaRuntimeHttpClient, handler);
         lambdaRuntimeLoop.run();
     }
 
     private static RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> getHandlerInstance(String handlerName) {
         Class<?> handlerClass = loadHandlerClass(handlerName);
-        if (handlerClass == null) {
-            return null;
-        }
         Constructor<?> constructor = findZeroArgConstructor(handlerClass);
         if (constructor == null) {
-            System.out.println("No zero-arg constructor found for " + handlerName);
-            return null;
+            throw new RuntimeException("No zero-arg constructor");
         }
-
         return instantiateHandler(constructor);
     }
 
@@ -41,8 +35,8 @@ public class Main {
         try {
             return Class.forName(handlerName);
         } catch (ClassNotFoundException e) {
-            System.out.println("Handler not found: " + e.getMessage());
-            return null;
+            LOGGER.error("Handler not found on classpath: " + handlerName);
+            throw new RuntimeException(e);
         }
     }
 
@@ -52,6 +46,7 @@ public class Main {
                 return constructor;
             }
         }
+        LOGGER.warn("No zero-arg constructor found for " + clazz.getName());
         return null;
     }
 
@@ -60,8 +55,8 @@ public class Main {
         try {
             return (RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent>) constructor.newInstance();
         } catch (Exception e) {
-            System.out.println("Failed to construct handler: " + e.getMessage());
-            return null;
+            LOGGER.error("Failed to construct instance of handler: ", e);
+            throw new RuntimeException(e);
         }
     }
 }
