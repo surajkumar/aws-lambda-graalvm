@@ -23,6 +23,13 @@ subprojects {
         implementation 'com.amazonaws:aws-lambda-java-events:3.13.0'
         implementation 'com.amazonaws:aws-lambda-java-runtime-interface-client:2.6.0'
 
+        implementation 'software.amazon.awssdk:url-connection-client:2.13.31'
+
+        configurations.configureEach {
+            exclude group: 'software.amazon.awssdk', module: 'apache-client'
+            exclude group: 'software.amazon.awssdk', module: 'netty-nio-client'
+        }
+
         implementation 'org.slf4j:log4j-over-slf4j:2.0.16'
         implementation 'ch.qos.logback:logback-classic:1.5.7'
     }
