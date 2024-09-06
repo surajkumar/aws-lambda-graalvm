@@ -10,6 +10,9 @@ import java.lang.reflect.Constructor;
 
 public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
+    static {
+        System.setProperty("software.amazon.awssdk.http.service.impl", "software.amazon.awssdk.http.urlconnection.UrlConnectionSdkHttpService");
+    }
 
     public static void main(String[] args) throws Exception {
         LambdaRuntimeHttpClient lambdaRuntimeHttpClient = new LambdaRuntimeHttpClient();
